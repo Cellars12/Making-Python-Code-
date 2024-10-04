@@ -1,17 +1,6 @@
 import random
 import json
 
-class Quest:
-    def __init__(self, description, reward):
-        self.description = description
-        self.reward = reward
-        self.completed = False
-
-    def complete(self):
-        self.completed = True
-        print(f"퀘스트 '{self.description}' 완료! 보상: {self.reward} 골드")
-        return self.reward
-
 class Character:
     def __init__(self, name, health, attack, level=1, character_class="전사"):
         self.name = name
@@ -23,15 +12,6 @@ class Character:
         self.skills = []
         self.gold = 0
         self.character_class = character_class
-        self.skill_unlocks = self.get_skill_unlocks()
-        self.status_effects = []
-
-    def get_skill_unlocks(self):
-        if self.character_class == "전사":
-            return {100: "분노", 200: "방패막기", 300: "돌진", 400: "전사비기"}
-        elif self.character_class == "마법사":
-            return {100: "냉기 마법", 200: "화염구", 300: "번개", 400: "원소 폭발"}
-        return {}
 
     def is_alive(self):
         return self.health > 0
@@ -45,22 +25,10 @@ class Character:
         print(f"{self.name}가 {enemy.name}를 공격합니다! {damage}의 피해를 입혔습니다.")
         enemy.take_damage(damage)
 
-    def apply_status_effect(self, effect):
-        self.status_effects.append(effect)
-        print(f"{self.name}가 '{effect}' 상태 효과에 걸렸습니다!")
-
-    def update_status_effects(self):
-        for effect in list(self.status_effects):
-            if effect == "중독":
-                damage = random.randint(5, 10)
-                self.take_damage(damage)
-                print(f"{self.name}가 중독으로 {damage}의 피해를 입었습니다!")
-            # 추가 상태 효과를 여기서 처리할 수 있습니다.
-
     def gain_experience(self, amount):
         self.experience += amount
         print(f"{self.name}가 {amount} 경험치를 얻었습니다! 총 경험치: {self.experience}")
-        if self.experience >= 100:  # 레벨업 조건
+        if self.experience >= 100:
             self.level_up()
 
     def level_up(self):
@@ -69,36 +37,78 @@ class Character:
         self.attack += 5
         self.experience = 0
         print(f"{self.name}가 레벨 {self.level}로 상승했습니다! 체력: {self.health}, 공격력: {self.attack}")
-        if self.level in self.skill_unlocks:
-            self.learn_skill(self.skill_unlocks[self.level])
+        self.learn_new_skills()
+
+    def learn_new_skills(self):
+        warrior_skills = {
+            100: "강타",
+            200: "맹공격",
+            300: "지진",
+            400: "전투의 외침",
+            500: "방어 자세",
+            600: "분노의 일격",
+            700: "철벽 방어",
+            800: "전투 장벽",
+            900: "광폭화"
+        }
+        mage_skills = {
+            100: "불꽃구슬",
+            200: "냉기 마법",
+            300: "전기 충격",
+            400: "치유 마법",
+            500: "시간 정지",
+            600: "대지의 힘",
+            700: "영혼의 폭풍",
+            800: "천상의 기원",
+            900: "우주 마법"
+        }
+
+        if self.character_class == "전사" and self.level in warrior_skills:
+            skill = warrior_skills[self.level]
+            self.learn_skill(skill)
+        elif self.character_class == "마법사" and self.level in mage_skills:
+            skill = mage_skills[self.level]
+            self.learn_skill(skill)
 
     def learn_skill(self, skill):
         if skill not in self.skills:
             self.skills.append(skill)
             print(f"{self.name}가 스킬 '{skill}'을(를) 배웠습니다!")
 
-    def show_stats(self):
-        print(f"이름: {self.name}, 직업: {self.character_class}, 레벨: {self.level}, "
-              f"체력: {self.health}, 공격력: {self.attack}, 경험치: {self.experience}, "
-              f"골드: {self.gold}, 인벤토리: {self.inventory}, 스킬: {self.skills}")
+    def use_item(self, item):
+        if item in self.inventory:
+            if item == "치료제":
+                self.health += 30
+                self.inventory.remove(item)
+                print(f"{self.name}가 {item}를 사용하여 체력을 30 회복했습니다! 남은 체력: {self.health}")
+            elif item == "경험치 병":
+                xp_gain = random.randint(20, 50)
+                self.gain_experience(xp_gain)
+                self.inventory.remove(item)
+                print(f"{self.name}가 {item}를 사용하여 경험치를 {xp_gain} 얻었습니다!")
+            else:
+                print(f"{item}는 사용할 수 없는 아이템입니다.")
+        else:
+            print(f"{item}이(가) 인벤토리에 없습니다.")
 
-class Enemy(Character):
-    def __init__(self, name, health, attack, special_ability=None):
-        super().__init__(name, health, attack)
-        self.special_ability = special_ability
+    def use_skill(self, skill, enemy):
+        if skill in self.skills:
+            damage = random.randint(15, self.attack + 10)
+            print(f"{self.name}가 스킬 '{skill}'로 {enemy.name}를 공격합니다! {damage}의 피해를 입혔습니다.")
+            enemy.take_damage(damage)
+        else:
+            print(f"{self.name}는 스킬 '{skill}'을(를) 사용할 수 없습니다.")
 
-    def use_special_ability(self, player):
-        if self.special_ability == "독":
-            damage = random.randint(5, 10)
-            player.take_damage(damage)
-            print(f"{self.name}가 독을 사용했습니다! {damage}의 피해를 입었습니다.")
+    def add_gold(self, amount):
+        self.gold += amount
+        print(f"{self.name}가 {amount}골드를 얻었습니다! 총 골드: {self.gold}")
 
 class Shop:
     def __init__(self):
         self.items = {
             "치료제": 20,
-            "경험치 병": 50,
-            "강화 포션": 100,
+            "강화 포션": 50,
+            "경험치 병": 30,
         }
 
     def show_items(self):
@@ -122,32 +132,74 @@ class Game:
     def __init__(self):
         self.player = None
         self.enemies = []
-        self.quest = None
-        self.quest_completed = False
+        self.current_quest = None
         self.shop = Shop()
+        self.quests = [
+            "고블린 3마리 처치하기",
+            "슬라임 5마리 처치하기",
+            "늑대 2마리 처치하기",
+            "마을 주민을 도와주기",
+            "전설의 아이템 찾기",
+            "신비한 물약을 모으기",
+            "보물 찾기",
+            "마법사의 탑 정복하기",
+            "어둠의 세력 처치하기",
+            "전투 훈련소에서 훈련하기",
+            "사라진 마을 탐색하기",
+            "미궁을 탐험하기",
+            "적의 기지를 공격하기",
+            "상인을 도와주기",
+            "고대 유적 조사하기",
+            "마법의 수정 찾기",
+            "불의 신전 정화하기",
+            "해적의 보물 찾기",
+            "왕국을 구하기",
+            "전쟁의 영웅 찾기",
+            "여행하는 상인 보호하기",
+            "용의 알 찾기",
+            "악당의 소굴 정리하기",
+            "가장 강력한 전사 찾기",
+            "신비한 성물 수집하기",
+            "사냥꾼의 훈련 받기",
+            "도둑을 쫓아내기",
+            "마법서를 찾아오기",
+            "정글의 괴물 처치하기",
+            "성 안의 비밀 조사하기",
+            "운명의 수레바퀴 회전시키기",
+            "마법의 열쇠 찾기"
+        ]
 
-    def create_quest(self):
-        self.quest = Quest("고블린 2마리 처치하기", 50)
+    def choose_character(self):
+        print("캐릭터를 선택하세요:")
+        print("1. 전사 (체력: 100, 공격력: 20)")
+        print("2. 마법사 (체력: 80, 공격력: 30)")
+        
+        choice = input("캐릭터 번호를 입력하세요: ")
+        if choice == '1':
+            self.player = Character("전사", 100, 20, character_class="전사")
+            self.player.learn_skill("강타")
+        elif choice == '2':
+            self.player = Character("마법사", 80, 30, character_class="마법사")
+            self.player.learn_skill("불꽃구슬")
+        else:
+            print("잘못된 선택입니다. 전사로 설정합니다.")
+            self.player = Character("전사", 100, 20, character_class="전사")
 
     def create_enemies(self, count):
         enemy_types = [
-            ("고블린", random.randint(50, 80), random.randint(5, 10), "독"),
+            ("고블린", random.randint(50, 80), random.randint(5, 10)),
             ("슬라임", random.randint(30, 60), random.randint(3, 8)),
             ("늑대", random.randint(40, 70), random.randint(8, 12)),
         ]
-        for _ in range(count):
+        for i in range(count):
             enemy_type = random.choice(enemy_types)
-            enemy = Enemy(enemy_type[0], enemy_type[1], enemy_type[2], enemy_type[3] if len(enemy_type) > 3 else None)
+            enemy = Character(enemy_type[0], enemy_type[1], enemy_type[2])
             self.enemies.append(enemy)
             print(f"{enemy.name}가 나타났습니다! 체력: {enemy.health}, 공격력: {enemy.attack}")
 
     def battle(self):
-        if self.quest and not self.quest.completed:
-            print(f"현재 퀘스트: {self.quest.description}")
-
         while self.player.is_alive() and self.enemies:
-            self.player.update_status_effects()
-            action = input("행동을 선택하세요 (1: 공격, 2: 아이템 사용, 3: 스킬 사용, 4: 상점, 5: 스탯 보기): ")
+            action = input("행동을 선택하세요 (1: 공격, 2: 아이템 사용, 3: 스킬 사용, 4: 상점): ")
             if action == '1':
                 for enemy in list(self.enemies):
                     self.player.attack_enemy(enemy)
@@ -156,9 +208,6 @@ class Game:
                         self.player.gain_experience(50)
                         self.player.add_gold(random.randint(5, 20))
                         self.enemies.remove(enemy)
-                        if self.quest and not self.quest.completed and len(self.enemies) == 0:
-                            self.quest.complete()
-                            self.player.add_gold(self.quest.reward)
                     else:
                         enemy.attack_enemy(self.player)
                     if not self.player.is_alive():
@@ -170,15 +219,14 @@ class Game:
                 self.use_skill()
             elif action == '4':
                 self.shop_menu()
-            elif action == '5':
-                self.player.show_stats()
             else:
                 print("잘못된 선택입니다.")
 
             print("")
 
-        if self.player.is_alive() and len(self.enemies) == 0:
+        if self.player.is_alive():
             print("축하합니다! 모든 적을 처치했습니다!")
+            self.complete_quest()
 
     def use_item(self):
         if self.player.inventory:
@@ -188,17 +236,7 @@ class Game:
             choice = int(input("아이템 번호를 입력하세요: ")) - 1
             if 0 <= choice < len(self.player.inventory):
                 item_to_use = self.player.inventory[choice]
-                if item_to_use == "치료제":
-                    self.player.health += 30
-                    self.player.inventory.remove(item_to_use)
-                    print(f"{self.player.name}가 {item_to_use}를 사용하여 체력을 30 회복했습니다! 남은 체력: {self.player.health}")
-                elif item_to_use == "경험치 병":
-                    xp_gain = random.randint(10, 50)
-                    self.player.gain_experience(xp_gain)
-                    self.player.inventory.remove(item_to_use)
-                    print(f"{self.player.name}가 {item_to_use}를 사용하여 {xp_gain} 경험치를 얻었습니다!")
-                else:
-                    print(f"{item_to_use}는 사용할 수 없는 아이템입니다.")
+                self.player.use_item(item_to_use)
             else:
                 print("잘못된 선택입니다.")
         else:
@@ -211,10 +249,8 @@ class Game:
                 print(f"{idx}. {skill}")
             choice = int(input("스킬 번호를 입력하세요: ")) - 1
             if 0 <= choice < len(self.player.skills):
-                target_enemy = random.choice(self.enemies)  # 랜덤으로 적을 선택
-                damage = random.randint(15, self.player.attack + 10)
-                print(f"{self.player.name}가 스킬 '{self.player.skills[choice]}'로 {target_enemy.name}를 공격합니다! {damage}의 피해를 입혔습니다.")
-                target_enemy.take_damage(damage)
+                target_enemy = random.choice(self.enemies)
+                self.player.use_skill(self.player.skills[choice], target_enemy)
             else:
                 print("잘못된 선택입니다.")
         else:
@@ -229,6 +265,44 @@ class Game:
             else:
                 self.shop.buy_item(self.player, action)
 
+    def complete_quest(self):
+        if self.current_quest:
+            print(f"퀘스트 '{self.current_quest}' 완료! 보상을 받았습니다.")
+            self.player.add_gold(50)
+            self.current_quest = random.choice(self.quests)  # 새로운 퀘스트 부여
+            print(f"새로운 퀘스트: '{self.current_quest}'가 부여되었습니다!")
+
+    def save_game(self):
+        game_state = {
+            "name": self.player.name,
+            "health": self.player.health,
+            "attack": self.player.attack,
+            "level": self.player.level,
+            "experience": self.player.experience,
+            "inventory": self.player.inventory,
+            "skills": self.player.skills,
+            "gold": self.player.gold,
+            "character_class": self.player.character_class,
+            "quest": self.current_quest,
+        }
+        with open("save_game.json", "w") as f:
+            json.dump(game_state, f)
+        print("게임이 저장되었습니다.")
+
+    def load_game(self):
+        try:
+            with open("save_game.json", "r") as f:
+                game_state = json.load(f)
+                self.player = Character(game_state["name"], game_state["health"], game_state["attack"], game_state["level"], game_state["character_class"])
+                self.player.experience = game_state["experience"]
+                self.player.inventory = game_state["inventory"]
+                self.player.skills = game_state["skills"]
+                self.player.gold = game_state["gold"]
+                self.current_quest = game_state["quest"]
+            print("게임이 로드되었습니다.")
+        except FileNotFoundError:
+            print("저장된 게임이 없습니다.")
+
     def start(self):
         print("1. 새 게임")
         print("2. 저장된 게임 로드")
@@ -237,23 +311,12 @@ class Game:
             self.load_game()
         self.choose_character()
         self.player.inventory.append("치료제")  # 기본 아이템 추가
-        self.create_quest()  # 기본 퀘스트 추가
+        self.player.inventory.append("경험치 병")  # 기본 아이템 추가
+        self.current_quest = random.choice(self.quests)  # 새로운 퀘스트 부여
+        print(f"현재 퀘스트: '{self.current_quest}'가 부여되었습니다!")
         self.create_enemies(random.randint(2, 5))  # 2에서 5 사이의 적 생성
         self.battle()
-
-    def choose_character(self):
-        print("캐릭터를 선택하세요:")
-        print("1. 전사 (체력: 100, 공격력: 20)")
-        print("2. 마법사 (체력: 80, 공격력: 30)")
-        
-        choice = input("캐릭터 번호를 입력하세요: ")
-        if choice == '1':
-            self.player = Character("전사", 100, 20, character_class="전사")
-        elif choice == '2':
-            self.player = Character("마법사", 80, 30, character_class="마법사")
-        else:
-            print("잘못된 선택입니다. 전사로 설정합니다.")
-            self.player = Character("전사", 100, 20, character_class="전사")
+        self.save_game()
 
 if __name__ == "__main__":
     game = Game()
