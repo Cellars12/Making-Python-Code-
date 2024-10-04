@@ -78,6 +78,17 @@ class Character:
             self.skills.append(skill)
             print(f"{self.name}가 스킬 '{skill}'을(를) 배웠습니다!")
 
+    def show_stats(self):
+        print(f"이름: {self.name}")
+        print(f"직업: {self.character_class}")
+        print(f"레벨: {self.level}")
+        print(f"체력: {self.health}")
+        print(f"공격력: {self.attack}")
+        print(f"경험치: {self.experience}")
+        print(f"골드: {self.gold}")
+        print(f"인벤토리: {self.inventory}")
+        print(f"배운 스킬: {self.skills}")
+
     def use_item(self, item):
         if item in self.inventory:
             if item == "치료제":
@@ -168,7 +179,7 @@ class Game:
 
     def battle(self):
         while self.player.is_alive() and self.enemies:
-            action = input("행동을 선택하세요 (1: 공격, 2: 아이템 사용, 3: 스킬 사용, 4: 상점): ")
+            action = input("행동을 선택하세요 (1: 공격, 2: 아이템 사용, 3: 스킬 사용, 4: 상점, 5: 스탯 보기): ")
             if action == '1':
                 for enemy in list(self.enemies):
                     self.player.attack_enemy(enemy)
@@ -188,6 +199,8 @@ class Game:
                 self.use_skill()
             elif action == '4':
                 self.shop_menu()
+            elif action == '5':
+                self.player.show_stats()  # 스탯 보기
             else:
                 print("잘못된 선택입니다.")
 
@@ -206,6 +219,9 @@ class Game:
             if 0 <= choice < len(self.player.inventory):
                 item_to_use = self.player.inventory[choice]
                 self.player.use_item(item_to_use)
+                # 아이템이 사용되면 인벤토리에서 제거
+                if item_to_use == "치료제":
+                    self.player.inventory.remove(item_to_use)
             else:
                 print("잘못된 선택입니다.")
         else:
@@ -250,6 +266,7 @@ class Game:
             "inventory": self.player.inventory,
             "skills": self.player.skills,
             "gold": self.player.gold,
+            "character_class": self.player.character_class
         }
         with open("save_game.json", "w") as f:
             json.dump(game_state, f)
@@ -259,7 +276,7 @@ class Game:
         try:
             with open("save_game.json", "r") as f:
                 game_state = json.load(f)
-                self.player = Character(game_state["name"], game_state["health"], game_state["attack"], game_state["level"])
+                self.player = Character(game_state["name"], game_state["health"], game_state["attack"], game_state["level"], game_state["character_class"])
                 self.player.experience = game_state["experience"]
                 self.player.inventory = game_state["inventory"]
                 self.player.skills = game_state["skills"]
