@@ -1,35 +1,36 @@
 {
-    "name": "전사",                     // 캐릭터 이름
-    "health": 100,                     // 현재 체력
-    "attack": 20,                      // 공격력
-    "level": 1,                        // 현재 레벨
-    "experience": 0,                   // 현재 경험치
-    "inventory": ["치료제"],           // 인벤토리 아이템 리스트
-    "skills": ["강타"],                 // 배운 스킬 리스트
-    "gold": 0,                         // 현재 보유 골드
-    "character_class": "전사",          // 직업
-    "status_effects": [],               // 상태 효과 리스트 (예: ["중독"])
-    "quest": {                         // 퀘스트 정보
-        "description": "고블린 2마리 처치하기", // 퀘스트 설명
-        "reward": 50,                  // 퀘스트 보상
-        "completed": false             // 퀘스트 완료 여부
-    }
+    "name": "전사",
+    "health": 100,
+    "attack": 20,
+    "level": 1,
+    "experience": 0,
+    "inventory": [
+        "치료제",
+        "경험치 병"
+    ],
+    "skills": [
+        "강타"
+    ],
+    "gold": 0,
+    "character_class": "전사",
+    "quest": "고블린 3마리 처치하기"
 }
 
 {
-    "name": "마법사",                   // 캐릭터 이름
-    "health": 80,                      // 현재 체력
-    "attack": 30,                      // 공격력
-    "level": 1,                        // 현재 레벨
-    "experience": 0,                   // 현재 경험치
-    "inventory": ["치료제"],           // 인벤토리 아이템 리스트
-    "skills": ["냉기 마법"],            // 배운 스킬 리스트
-    "gold": 0,                         // 현재 보유 골드
-    "character_class": "마법사",        // 직업
-    "status_effects": [],               // 상태 효과 리스트 (예: ["중독"])
-    "quest": {                         // 퀘스트 정보
-        "description": "고블린 2마리 처치하기", // 퀘스트 설명
-        "reward": 50,                  // 퀘스트 보상
-        "completed": false             // 퀘스트 완료 여부
-    }
+    "name": "마법사",
+    "health": 80,
+    "attack": 30,
+    "level": 1,
+    "experience": 0,
+    "inventory": [
+        "치료제",
+        "경험치 병"
+    ],
+    "skills": [
+        "불꽃구슬"
+    ],
+    "gold": 0,
+    "character_class": "마법사",
+    "quest": "슬라임 5마리 처치하기"
 }
+
