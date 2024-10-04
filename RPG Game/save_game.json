@@ -8,7 +8,8 @@
     "skills": [],
     "gold": 0,
     "character_class": "전사"
-} 
+}
+
 
 {
     "name": "마법사",
@@ -20,4 +21,4 @@
     "skills": [],
     "gold": 0,
     "character_class": "마법사"
-} 
+}
