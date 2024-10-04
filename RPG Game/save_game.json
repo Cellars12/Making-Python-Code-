@@ -1,4 +1,3 @@
-# 전사 직업 선택할때 생성되는 json
 {
     "name": "전사",
     "health": 100,
@@ -9,9 +8,8 @@
     "skills": [],
     "gold": 0,
     "character_class": "전사"
-}
+} # 전사 직업 선택할때 생성되는 json
 
-# 마법사 직업 선택할때 생성되는 json
 {
     "name": "마법사",
     "health": 80,
@@ -22,4 +20,4 @@
     "skills": [],
     "gold": 0,
     "character_class": "마법사"
-}
+} # 마법사 직업 선택할때 생성되는 json
