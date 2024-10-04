@@ -2,7 +2,7 @@ import random
 import json
 
 class Character:
-    def __init__(self, name, health, attack, level=1):
+    def __init__(self, name, health, attack, level=1, character_class="전사"):
         self.name = name
         self.health = health
         self.attack = attack
@@ -11,6 +11,34 @@ class Character:
         self.inventory = []
         self.skills = []
         self.gold = 0
+        self.character_class = character_class
+        self.skill_unlocks = self.get_skill_unlocks()
+
+    def get_skill_unlocks(self):
+        if self.character_class == "전사":
+            return {
+                100: "강타",
+                200: "폭풍타격",
+                300: "전격",
+                400: "치유",
+                500: "신성한 보호",
+                600: "맹공격",
+                700: "대지의 힘",
+                800: "용기의 외침",
+                900: "신의 격노"
+            }
+        elif self.character_class == "마법사":
+            return {
+                100: "불꽃구슬",
+                200: "얼음 화살",
+                300: "전기 충격",
+                400: "소환 마법",
+                500: "시간 왜곡",
+                600: "원소의 힘",
+                700: "암흑 마법",
+                800: "마법 방어",
+                900: "우주적 힘"
+            }
 
     def is_alive(self):
         return self.health > 0
@@ -27,15 +55,28 @@ class Character:
     def gain_experience(self, amount):
         self.experience += amount
         print(f"{self.name}가 {amount} 경험치를 얻었습니다! 총 경험치: {self.experience}")
-        if self.experience >= 100:  # 레벨업 조건
+        self.check_level_up()
+
+    def check_level_up(self):
+        while self.experience >= 100:
             self.level_up()
 
     def level_up(self):
         self.level += 1
         self.health += 20  # 레벨업 시 체력 증가
         self.attack += 5   # 레벨업 시 공격력 증가
-        self.experience = 0  # 경험치 초기화
+        self.experience -= 100  # 경험치 감소
         print(f"{self.name}가 레벨 {self.level}로 상승했습니다! 체력: {self.health}, 공격력: {self.attack}")
+
+        # 스킬 잠금 해제
+        if self.level in self.skill_unlocks:
+            new_skill = self.skill_unlocks[self.level]
+            self.learn_skill(new_skill)
+
+    def learn_skill(self, skill):
+        if skill not in self.skills:
+            self.skills.append(skill)
+            print(f"{self.name}가 스킬 '{skill}'을(를) 배웠습니다!")
 
     def use_item(self, item):
         if item in self.inventory:
@@ -54,11 +95,6 @@ class Character:
                 print(f"{item}는 사용할 수 없는 아이템입니다.")
         else:
             print(f"{item}이(가) 인벤토리에 없습니다.")
-
-    def learn_skill(self, skill):
-        if skill not in self.skills:
-            self.skills.append(skill)
-            print(f"{self.name}가 스킬 '{skill}'을(를) 배웠습니다!")
 
     def use_skill(self, skill, enemy):
         if skill in self.skills:
@@ -111,15 +147,12 @@ class Game:
         
         choice = input("캐릭터 번호를 입력하세요: ")
         if choice == '1':
-            self.player = Character("전사", 100, 20)
-            self.player.learn_skill("강타")
+            self.player = Character("전사", 100, 20, character_class="전사")
         elif choice == '2':
-            self.player = Character("마법사", 80, 30)
-            self.player.learn_skill("불꽃구슬")
+            self.player = Character("마법사", 80, 30, character_class="마법사")
         else:
             print("잘못된 선택입니다. 전사로 설정합니다.")
-            self.player = Character("전사", 100, 20)
-            self.player.learn_skill("강타")
+            self.player = Character("전사", 100, 20, character_class="전사")
 
     def create_enemies(self, count):
         enemy_types = [
@@ -247,7 +280,6 @@ class Game:
         self.create_enemies(random.randint(2, 5))  # 2에서 5 사이의 적 생성
         self.battle()
         self.save_game()
-
 
 if __name__ == "__main__":
     game = Game()
