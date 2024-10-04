@@ -3,8 +3,13 @@
     "health": 100,
     "attack": 20,
     "level": 1,
-    "experience": 50,
-    "inventory": ["치료제", "강화 포션"],
-    "skills": ["강타"],
-    "gold": 75
+    "experience": 0,
+    "inventory": [
+        "치료제",
+        "경험치 병"
+    ],
+    "skills": [
+        "강타"
+    ],
+    "gold": 0
 }
