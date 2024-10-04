@@ -1,16 +1,25 @@
+# 전사 직업 선택할때 생성되는 json
 {
     "name": "전사",
     "health": 100,
     "attack": 20,
     "level": 1,
     "experience": 0,
-    "inventory": [
-        "치료제",
-        "강화 포션",
-        "경험치 병"
-    ],
-    "skills": [
-        "강타"
-    ],
-    "gold": 0
+    "inventory": ["치료제", "경험치 병"],
+    "skills": [],
+    "gold": 0,
+    "character_class": "전사"
+}
+
+# 마법사 직업 선택할때 생성되는 json
+{
+    "name": "마법사",
+    "health": 80,
+    "attack": 30,
+    "level": 1,
+    "experience": 0,
+    "inventory": ["치료제", "경험치 병"],
+    "skills": [],
+    "gold": 0,
+    "character_class": "마법사"
 }
