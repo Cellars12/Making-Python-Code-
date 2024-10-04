@@ -46,6 +46,10 @@ class Character:
             elif item == "골드":
                 print(f"{self.name}가 {item}를 사용하였습니다! 남은 골드: {self.gold}")
                 self.inventory.remove(item)
+            elif item == "경험치 병":
+                xp_amount = random.randint(10, 50)  # 10에서 50 사이의 랜덤 경험치
+                self.gain_experience(xp_amount)
+                self.inventory.remove(item)
             else:
                 print(f"{item}는 사용할 수 없는 아이템입니다.")
         else:
@@ -73,6 +77,7 @@ class Shop:
         self.items = {
             "치료제": 20,
             "강화 포션": 50,
+            "경험치 병": 30,  # 경험치 병 추가
         }
 
     def show_items(self):
@@ -168,9 +173,6 @@ class Game:
             if 0 <= choice < len(self.player.inventory):
                 item_to_use = self.player.inventory[choice]
                 self.player.use_item(item_to_use)
-                # 아이템이 사용되면 인벤토리에서 제거
-                if item_to_use == "치료제":
-                    self.player.inventory.remove(item_to_use)
             else:
                 print("잘못된 선택입니다.")
         else:
@@ -241,6 +243,7 @@ class Game:
             self.load_game()
         self.choose_character()
         self.player.inventory.append("치료제")  # 기본 아이템 추가
+        self.player.inventory.append("경험치 병")  # 기본 경험치 병 추가
         self.create_enemies(random.randint(2, 5))  # 2에서 5 사이의 적 생성
         self.battle()
         self.save_game()
