@@ -86,6 +86,10 @@ class Character:
                 self.gain_experience(xp_gain)
                 self.inventory.remove(item)
                 print(f"{self.name}가 {item}를 사용하여 경험치를 {xp_gain} 얻었습니다!")
+            elif item== "황금사과":
+                self.health += 100
+                self.inventory.remove(item)
+                print(f"{self.name}가 {item}를 사용하여 체력을 100 회복했습니다! 남은 체력: {self.health}")
             else:
                 print(f"{item}는 사용할 수 없는 아이템입니다.")
         else:
@@ -109,6 +113,7 @@ class Shop:
             "치료제": 20,
             "강화 포션": 50,
             "경험치 병": 30,
+            "황금사과": 300
         }
 
     def show_items(self):
