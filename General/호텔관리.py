@@ -115,7 +115,7 @@ def modify():
     
     room_num = input("\n방 번호를 입력하세요: ")
 
-    if room_num not인가(data["Room"]):
+    if room_num not in data["Room"]:
         print("방 번호를 찾을 수 없습니다.")
         return modify()
 
