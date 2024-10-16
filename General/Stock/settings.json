@@ -1,0 +1,10 @@
+{
+    "stock_list": ["AAPL", "TSLA"],
+    "target_prices": {
+        "AAPL": 150.00,
+        "TSLA": 600.00
+    },
+    "check_interval": 60,
+    "email": "recipient@example.com",
+    "discord_webhook": "your_discord_webhook_url"
+}
